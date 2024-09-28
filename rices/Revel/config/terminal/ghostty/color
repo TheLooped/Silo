@@ -1,0 +1,49 @@
+# =============================================================================
+#                              Color Palette Configuration
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+#                                 Basic Colors
+# -----------------------------------------------------------------------------
+# Define the background and foreground colors, as well as the cursor and 
+# selection colors used in the terminal.
+# -----------------------------------------------------------------------------
+
+background =#323A4B
+foreground =#BAC8D6
+cursor-color =#8A8F8F
+selection-background =#95AEF3
+selection-foreground =#222732
+
+# -----------------------------------------------------------------------------
+#                               Color Palette
+# -----------------------------------------------------------------------------
+# Define the palette of 16 terminal colors, including the colors for text,
+# highlights, and various UI elements.
+# Palette indexes range from 0 to 15 and are defined with unique hex codes.
+# -----------------------------------------------------------------------------
+
+palette = 0=#9579D1
+palette = 1=#FF667D
+palette = 2=#8EDDC3
+palette = 3=#FFDC7B
+palette = 4=#95AEF3
+palette = 5=#6A8EBC
+palette = 6=#4BB0BB
+palette = 7=#BAC8D6
+
+# -----------------------------------------------------------------------------
+#                         Bright Color Variants
+# -----------------------------------------------------------------------------
+# These are the bright color variants for the palette.
+# Typically, these are brighter versions of the base palette colors.
+# -----------------------------------------------------------------------------
+
+palette = 8=#AFF28C
+palette = 9=#FFB179
+palette = 10=#7EE3D0
+palette = 11=#FFDC7B
+palette = 12=#95AEF3
+palette = 13=#9579D1
+palette = 14=#4BB0BB
+palette = 15=#F0F3F7

@@ -1,0 +1,64 @@
+# =============================================================================
+#                        Ghostty Fonts Configuration
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+#                              Font Family
+# -----------------------------------------------------------------------------
+font-family = "Cartograph CF"
+font-family-bold = "Pitagon Sans Mono"
+font-family-italic =  "Monaspace Radon"
+font-family-bold-italic = "Monaspace Radon"
+
+# -----------------------------------------------------------------------------
+#                              Font Styles
+# -----------------------------------------------------------------------------
+font-style = "Regular"
+font-style-bold = "SemiBold"
+font-style-italic = "Italic"
+font-style-bold-italic = "SemiBold Italic"
+
+# Enable synthetic styles (bold, italic, bold-italic)
+font-synthetic-style = bold,italic,bold-italic
+
+# -----------------------------------------------------------------------------
+#                              Font Size
+# -----------------------------------------------------------------------------
+font-size = 10.93
+
+# -----------------------------------------------------------------------------
+#                           Font Variations
+# -----------------------------------------------------------------------------
+# Uncomment and set values for variable fonts
+# font-variation = 
+# font-variation-bold = 
+# font-variation-italic = 
+# font-variation-bold-italic = 
+
+# -----------------------------------------------------------------------------
+#                           Font Adjustments
+# -----------------------------------------------------------------------------
+# Uncomment and set values to adjust font metrics
+adjust-cell-height = -5%
+adjust-cell-width = -10%
+# adjust-font-baseline = 
+# adjust-underline-position = 
+# adjust-underline-thickness = 
+# adjust-strikethrough-position = 
+# adjust-strikethrough-thickness = 
+# adjust-cursor-thickness = 
+
+# -----------------------------------------------------------------------------
+#                           Advanced Settings
+# -----------------------------------------------------------------------------
+# Uncomment to enable font thickening (macOS only)
+# font-thicken = false
+
+# Method for calculating grapheme width
+grapheme-width-method = unicode
+
+# Uncomment to map specific Unicode codepoints to a font
+# font-codepoint-map = 
+
+# Uncomment to enable specific font features
+# font-feature =

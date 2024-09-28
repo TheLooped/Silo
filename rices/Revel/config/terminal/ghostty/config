@@ -1,0 +1,91 @@
+# =============================================================================
+#                        Ghostty Terminal Configuration
+# =============================================================================
+# Main configuration file: ~/.config/ghostty/config
+
+# -----------------------------------------------------------------------------
+#                           External Configurations
+# -----------------------------------------------------------------------------
+# Include modular configuration files for better organization
+config-file = "keybinds"
+config-file = "fonts"
+config-file = "color"
+
+# -----------------------------------------------------------------------------
+#                              Window Settings
+# -----------------------------------------------------------------------------
+# window-height = 40
+# window-width = 120
+
+# Window padding and appearance
+window-padding-x = 1
+window-padding-y = 1
+window-padding-balance = false
+window-padding-color = extend-always 
+window-decoration = true
+window-theme = auto
+window-save-state = default
+window-inherit-working-directory = true
+window-inherit-font-size = true
+
+
+# -----------------------------------------------------------------------------
+#                           Terminal Behavior
+# -----------------------------------------------------------------------------
+term = xterm-ghostty
+scrollback-limit = 10000
+mouse-hide-while-typing = true
+mouse-scroll-multiplier = 1.5
+confirm-close-surface = false
+initial-window = true
+quit-after-last-window-closed = true
+focus-follows-mouse = false
+
+# -----------------------------------------------------------------------------
+#                           Clipboard Settings
+# -----------------------------------------------------------------------------
+copy-on-select = true
+clipboard-read = ask
+clipboard-write = allow
+clipboard-trim-trailing-spaces = true
+clipboard-paste-protection = true
+
+# -----------------------------------------------------------------------------
+#                           Visual Settings
+# -----------------------------------------------------------------------------
+background-opacity = 1.0
+unfocused-split-opacity = 0.9
+cursor-style = block
+cursor-style-blink = true
+cursor-opacity = 1.0
+cursor-invert-fg-bg = false
+bold-is-bright = true
+resize-overlay = never
+
+# -----------------------------------------------------------------------------
+#                           Performance Settings
+# -----------------------------------------------------------------------------
+window-vsync = true
+image-storage-limit = 320000000
+
+# -----------------------------------------------------------------------------
+#                           Shell Integration
+# -----------------------------------------------------------------------------
+shell-integration = detect
+shell-integration-features = no-cursor,no-sudo,title
+
+# -----------------------------------------------------------------------------
+#                           Notification Settings
+# -----------------------------------------------------------------------------
+desktop-notifications = true
+
+
+# -----------------------------------------------------------------------------
+#                           GTK-specific Settings
+# -----------------------------------------------------------------------------
+# These settings are applicable for Linux environments
+gtk-single-instance = desktop
+gtk-titlebar = false
+gtk-tabs-location = top
+gtk-wide-tabs = true
+gtk-adwaita = true

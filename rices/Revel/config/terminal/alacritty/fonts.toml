@@ -1,0 +1,30 @@
+
+# -----------------------------------------------------------------------------
+#                               Font Settings
+# -----------------------------------------------------------------------------
+# Configure the font properties, including family, style, size, and offset.
+# -----------------------------------------------------------------------------
+[font]
+builtin_box_drawing = true
+size = 10.33
+glyph_offset = { x = 1, y = 1 }
+
+[font.bold]
+family = "Pitagon Sans Mono"
+style = "SemiBold"
+
+[font.bold_italic]
+family = "Pitagon Sans Mono"
+style = "SemiBold"
+
+[font.italic]
+family = "Monaspace Radon"
+style = "Italic"
+
+[font.normal]
+family = "Cartograph CF"
+style = "Regular"
+
+[font.offset]
+x = -1
+y = 2

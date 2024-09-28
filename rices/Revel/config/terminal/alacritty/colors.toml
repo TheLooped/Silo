@@ -1,0 +1,72 @@
+
+# -----------------------------------------------------------------------------
+#                             Color Configuration
+# -----------------------------------------------------------------------------
+# Define the color scheme for the terminal, including background, foreground,
+# and various color palettes for different terminal elements.
+# -----------------------------------------------------------------------------
+[colors]
+transparent_background_colors = false  # Disable transparent background
+
+# Bright colors used for the terminal text
+[colors.bright]
+black    = "#6A8EBC"
+blue     = "#95AEF3"
+cyan     = "#7EE3D0"
+green    = "#8EDDC3"
+magenta  = "#9579D1"
+red      = "#FF667D"
+white    = "#FFF8D4"
+yellow   = "#FFDC7B"
+
+# Dim colors used for less intense text
+[colors.dim]
+black    = "#2B303A"
+blue     = "#6CAFC2"
+cyan     = "#5BAA9A"
+green    = "#7DA97A"
+magenta  = "#82567A"
+red      = "#9A5555"
+white    = "#D3DEE5"
+yellow   = "#A59A42"
+
+# Colors for the line indicators in the terminal
+[colors.line_indicator]
+foreground = "None"
+background = "#FF667D"
+
+# Normal colors used for the typical text in the terminal
+[colors.normal]
+black    = "#1D1F21"
+blue     = "#68F1FE"
+cyan     = "#78FFF2"
+green    = "#86FF7C"
+magenta  = "#EA76FF"
+red      = "#FF758F"
+white    = "#C5C8C6"
+yellow   = "#FFF672"
+
+# Primary background and foreground colors for the terminal
+[colors.primary]
+background        = "#323A4B"
+bright_foreground = "#FFF8D4"
+dim_foreground    = "#7F8A98"
+foreground        = "#CFD8DD"
+
+# Colors used for selected text and its background
+[colors.selection]
+background = "#48576A"
+text       = "#CFD8DD"
+
+# Hint colors for additional visual clarity
+[colors.hints]
+start = { foreground = "#FFF8D4", background = "#CCA4E0" }
+end   = { foreground = "#00000e", background = "#FF667D" }
+
+# Cursor color in the terminal
+[colors.cursor]
+cursor = "#8E8E8E"
+
+# Enable drawing bold text with bright colors
+[colors]
+draw_bold_text_with_bright_colors = true

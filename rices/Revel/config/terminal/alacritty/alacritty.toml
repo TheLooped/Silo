@@ -1,0 +1,72 @@
+# =============================================================================
+#                        Alacritty Terminal Configuration
+# =============================================================================
+# This configuration file defines the settings for the Alacritty terminal
+# emulator. It includes imports, window properties, cursor settings, colors,
+# fonts, and keyboard bindings.
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+#                               Import Statements
+# -----------------------------------------------------------------------------
+# Import additional configuration files for fonts, colors, and key bindings.
+# These files are expected to be in the ~/.config/alacritty/ directory.
+# -----------------------------------------------------------------------------
+import = [
+    "~/.config/alacritty/fonts.toml",
+    "~/.config/alacritty/colors.toml",
+    "~/.config/alacritty/keys.toml"
+]
+
+# -----------------------------------------------------------------------------
+#                           General Configuration
+# -----------------------------------------------------------------------------
+# Define global settings for Alacritty's behavior and performance.
+# -----------------------------------------------------------------------------
+ipc_socket = true
+live_config_reload = true
+
+# -----------------------------------------------------------------------------
+#                              Cursor Settings
+# -----------------------------------------------------------------------------
+# Configure the appearance and behavior of the cursor in the terminal.
+# -----------------------------------------------------------------------------
+[cursor]
+blink_interval = 350
+thickness = 0.15
+unfocused_hollow = true
+
+[cursor.style]
+blinking = "On"
+shape = "Block"
+
+# -----------------------------------------------------------------------------
+#                           Environment Variables
+# -----------------------------------------------------------------------------
+# Set environment variables for the terminal session.
+# -----------------------------------------------------------------------------
+[env]
+TERM = "alacritty"
+
+# -----------------------------------------------------------------------------
+#                             Scrolling Options
+# -----------------------------------------------------------------------------
+# Define scrolling behavior and history limits.
+# -----------------------------------------------------------------------------
+[scrolling]
+history = 3000
+multiplier = 3
+
+# -----------------------------------------------------------------------------
+#                              Window Settings
+# -----------------------------------------------------------------------------
+# Configure the appearance and behavior of the Alacritty window.
+# -----------------------------------------------------------------------------
+[window]
+decorations = "full"
+dynamic_padding = true
+resize_increments = true 
+dynamic_title = false
+opacity = 1.0
+startup_mode = "Windowed"
+title = "Alacritty"

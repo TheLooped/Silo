@@ -1,0 +1,47 @@
+
+# -----------------------------------------------------------------------------
+#                           Keyboard Bindings
+# -----------------------------------------------------------------------------
+# Define custom key bindings for various actions in the terminal.
+# -----------------------------------------------------------------------------
+[keyboard]
+bindings = [
+    # Window management
+    { key = "N", mods = "Control|Shift", action = "CreateNewWindow" },
+    { key = "Q", mods = "Control|Shift", action = "Quit" },
+    { key = "F", mods = "Control|Shift", action = "ToggleFullscreen" },
+    { key = "M", mods = "Control|Shift", action = "Minimize" },
+    
+    # Clipboard management
+    { key = "C", mods = "Control|Shift", action = "Copy" },
+    { key = "V", mods = "Control|Shift", action = "Paste" },
+    
+    # Font size adjustment
+    { key = "=", mods = "Control", action = "IncreaseFontSize" },
+    { key = "-", mods = "Control", action = "DecreaseFontSize" },
+    { key = "0", mods = "Control", action = "ResetFontSize" },
+    
+    # Scrolling actions
+    { key = "K", mods = "Shift", action = "ScrollLineUp" },
+    { key = "J", mods = "Shift", action = "ScrollLineDown" },
+    
+    # Search actions
+    { key = "F", mods = "Control", action = "SearchForward" },
+    { key = "B", mods = "Control", action = "SearchBackward" },
+    
+    # Vi mode (if relevant)
+    { key = "V", mods = "Control|Alt", action = "ToggleViMode" },
+    { key = "H", mode = "Vi", action = "Left" },
+    { key = "J", mode = "Vi", action = "Down" },
+    { key = "K", mode = "Vi", action = "Up" },
+    { key = "L", mode = "Vi", action = "Right" },
+    
+    # Linux/BSD exclusive clipboard
+    { key = "Y", mods = "Control|Shift", action = "CopySelection" },
+    { key = "P", mods = "Control|Shift", action = "PasteSelection" },
+    
+    # macOS exclusive tab management
+    { key = "T", mods = "Control|Shift", action = "CreateNewTab" },
+    { key = "Tab", mods = "Control|Shift", action = "SelectNextTab" },
+    { key = "Tab", mods = "Alt|Shift|Control", action = "SelectPreviousTab" }
+]
