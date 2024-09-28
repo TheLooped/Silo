@@ -1,0 +1,178 @@
+#!/usr/bin/env bash
+
+# =============================================================================
+#                           DK Window Manager Configuration
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+#                                 Logging Setup
+# -----------------------------------------------------------------------------
+# Purpose: Initialize log file for error tracking and debugging
+# The log file location depends on the existence of specific directories
+
+logfile="$HOME/.local/share/log/dk/dkrc.log"
+[ -d "$HOME/.local/share/xorg" ] && logfile="$HOME/.local/share/xorg/dkrc.log"
+: > "$logfile"
+
+
+# -----------------------------------------------------------------------------
+#                             Startup Applications
+# -----------------------------------------------------------------------------
+# Purpose: Launch essential background applications and services
+
+# Keybindings: sxhkd for managing keyboard shortcuts
+if command -v sxhkd >/dev/null 2>&1; then
+    pkill sxhkd
+    sxhkd -c "$HOME/.config/sxhkd/sxhkdrc" &
+fi
+
+# Wallpaper: Set background image using feh
+if command -v feh >/dev/null 2>&1; then
+    feh --no-fehbg --bg-scale "$HOME/Papers/static/city.png" &
+fi
+
+# Compositor: picom for window effects and transparency
+if command -v picom >/dev/null 2>&1; then
+    pkill picom
+    picom -b &
+fi
+
+# Notification daemon: dunst for desktop notifications
+if command -v dunst >/dev/null 2>&1; then
+    pkill dunst
+    dunst &
+fi
+
+# Audio server: pipewire for advanced audio processing
+if command -v pipewire >/dev/null 2>&1; then
+    pipewire &
+fi
+
+# -----------------------------------------------------------------------------
+#                         DPI and Border Calculation
+# -----------------------------------------------------------------------------
+# Purpose: Calculate and set appropriate DPI and border sizes based on screen resolution
+# This ensures consistent appearance across different screen sizes and resolutions
+
+screen_height=$(xrandr | grep ' connected' | tail -n1 | grep -o '[0-9]\+x[0-9]\+' | cut -d'x' -f2)
+screen_width=$(xrandr | grep ' connected' | tail -n1 | grep -o '[0-9]\+x[0-9]\+' | cut -d'x' -f1)
+dpiF=$(echo "scale=2; $screen_width / $screen_height * 25" | bc)
+dpi="${dpiF%.*}"
+dpi=$(( dpi * 10))
+
+if [ $dpi -ge 140 ]; then
+    border_width=4
+    gap=8
+elif [ $dpi -ge 120 ]; then
+    border_width=4
+    gap=6
+else
+    border_width=2
+    gap=4
+fi
+
+xrandr --dpi $dpi &
+
+{
+# -----------------------------------------------------------------------------
+#                           Workspace Configuration
+# -----------------------------------------------------------------------------
+# Purpose: Define and configure workspaces
+# Each workspace is assigned a name and layout to optimize workflow
+
+dkcmd set numws=7
+dkcmd set ws=_ apply gap="$gap" msplit=0.5 ssplit=0.5
+dkcmd set ws=1 name="Development" layout=grid
+dkcmd set ws=2 name="Web & Research" layout=mono
+dkcmd set ws=3 name="Communication" layout=mono
+dkcmd set ws=4 name="Entertainment" layout=mono
+dkcmd set ws=5 name="Productivity" layout=grid
+dkcmd set ws=6 name="Utilities" layout=none
+dkcmd set ws=7 name="Background Services" layout=mono
+
+# -----------------------------------------------------------------------------
+#                               Global Settings
+# -----------------------------------------------------------------------------
+# Purpose: Configure global behavior of the window manager
+# These settings affect focus behavior, tiling, and general window management
+
+# Focus settings: Determine how windows gain focus
+dkcmd set focus_open=true focus_urgent=true focus_mouse=true
+
+# Tiling behavior: Configure how windows are tiled
+dkcmd set tile_tohead=0 tile_hints=true
+
+# Window sizing constraints: Set minimum window dimensions
+dkcmd set win_minwh=50 win_minxy=10
+
+# Gap and border smartness: Adjust gaps and borders dynamically
+dkcmd set smart_gap=false smart_border=true
+
+# Mouse controls: Define mouse actions for window management
+dkcmd set mouse mod=alt move=button1 resize=button3
+
+# Motif hints: Respect application-defined window decorations
+dkcmd set obey_motif=true
+
+# Border aesthetics: Set border colors for different window states
+dkcmd set border width=$border_width colour focus='#ef9f1c' unfocus='#B4B8BD' urgent='#ee5555'
+
+# -----------------------------------------------------------------------------
+#                               Window Rules
+# -----------------------------------------------------------------------------
+# Purpose: Define rules for specific applications
+# These rules determine workspace assignment, window behavior, and appearance
+
+# Workspace assignments: Place applications on specific workspaces
+dkcmd rule class="^Brave-browser$" ws=2
+dkcmd rule class="^firefox$" ws=2
+dkcmd rule class="^discord$" ws=3
+dkcmd rule class="^Thunderbird$" ws=5
+dkcmd rule class="^Spotify$" ws=4
+
+# Floating windows: Set certain applications to always float
+dkcmd rule class="^(pavucontrol|transmission-gtk|steam|lxappearance)$" float=true
+dkcmd rule class="^Gimp$" float=true
+
+# Terminal rules: Identify terminal emulators for special handling
+dkcmd rule class="^(st|st-256color|ghostty|kitty|alacritty|xterm|xterm-256color)$" terminal=true
+
+# Sticky windows: Keep certain windows visible on all workspaces
+dkcmd rule class="^Conky$" stick=true
+
+# Focus rules: Automatically focus certain windows when opened
+dkcmd rule class="^firefox$" focus=true
+
+# Scratchpad: Designate a window class for quick access
+dkcmd rule class="^scratchpad$" scratch=true
+
+# Calculate center position for centered floating windows
+center_x=$((screen_width / 2 - 300))  # Assuming a width of 600
+center_y=$((screen_height / 2 - 200)) # Assuming a height of 400
+
+# Specific window geometries: Set size and position for floating windows
+dkcmd rule class="^gnome-calculator$" title="^Calculator$" float=true w=600 h=400 x=$center_x y=$center_y
+
+# Apply all rules: Ensure rules are applied to existing windows (useful for WM restart)
+dkcmd rule apply '*'
+
+} >> "$logfile" 2>&1
+
+# -----------------------------------------------------------------------------
+#                               Error Checking
+# -----------------------------------------------------------------------------
+# Purpose: Check for and report any errors that occurred during configuration
+# Errors are reported via desktop notification or console output
+
+if grep -q 'error:' "$logfile"; then
+    if hash notify-send 2>/dev/null; then
+        notify-send -t 0 -u critical "dkrc has errors" \
+            "$(awk '/error:/ {sub(/^error: /, ""); gsub(/</, "\<"); print}' "$logfile")"
+    else
+        echo "dkrc has errors:" >&2
+        awk '/error:/ {sub(/^error: /, ""); gsub(/</, "\<"); print}' "$logfile" >&2
+    fi
+    exit 1
+fi
+
+exit 0
