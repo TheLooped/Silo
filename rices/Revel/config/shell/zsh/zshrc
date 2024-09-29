@@ -1,0 +1,322 @@
+# ╔═══════════════════════════════════════════════════════════════════════════╗
+# ║                             Zinit Setup                                   ║
+# ╚═══════════════════════════════════════════════════════════════════════════╝
+
+ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
+[ ! -d $ZINIT_HOME ] && mkdir -p "$(dirname $ZINIT_HOME)"
+[ ! -d $ZINIT_HOME/.git ] && git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
+source "${ZINIT_HOME}/zinit.zsh"
+
+# ┌─────────────────────────────────────────────────────────────────────────┐
+# │                           Zinit Plugins                                 │
+# └─────────────────────────────────────────────────────────────────────────┘
+
+# Plugin history-search-multi-word loaded with investigating
+zinit load zdharma-continuum/history-search-multi-word
+
+# Fast-syntax-highlighting
+zinit ice wait lucid atinit"ZINIT[COMPINIT_OPTS]=-C; zpcompinit; zpcdreplay"
+zinit light zdharma-continuum/fast-syntax-highlighting
+
+# Zsh-autosuggestions
+zinit ice wait lucid atload"!_zsh_autosuggest_start"
+zinit load zsh-users/zsh-autosuggestions
+
+# Zsh substring history search
+zinit load "zsh-users/zsh-history-substring-search"
+zinit ice wait atload'_history_substring_search_config'
+
+# Binary release in archive, from GitHub-releases page
+# After automatic unpacking it provides program "fzf"
+zinit ice from"gh-r" as"program"
+zinit light junegunn/fzf-bin
+
+# ┌─────────────────────────────────────────────────────────────────────────┐
+# │                         Oh-My-Zsh Libraries                             │
+# └─────────────────────────────────────────────────────────────────────────┘
+
+zinit snippet OMZL::git.zsh
+zinit snippet OMZL::history.zsh
+zinit snippet OMZL::key-bindings.zsh
+zinit snippet OMZL::completion.zsh
+
+# ┌─────────────────────────────────────────────────────────────────────────┐
+# │                         Oh-My-Zsh Plugins                               │
+# └─────────────────────────────────────────────────────────────────────────┘
+
+zinit snippet OMZP::git
+zinit snippet OMZP::sudo
+zinit snippet OMZP::command-not-found
+
+# ╔═══════════════════════════════════════════════════════════════════════════╗
+# ║                             Zsh History Setup                             ║
+# ╚═══════════════════════════════════════════════════════════════════════════╝
+
+# Set the history file location
+HISTFILE=~/.zsh_history
+
+# Set the number of lines to keep in memory
+HISTSIZE=10000
+
+# Set the number of lines to save to disk
+SAVEHIST=10000
+
+# Erase history duplications
+HISTDUP=erase
+
+# ┌─────────────────────────────────────────────────────────────────────────┐
+# │                           History Options                               │
+# └─────────────────────────────────────────────────────────────────────────┘
+# Append to history file instead of overwriting
+setopt APPEND_HISTORY
+
+# Add commands to history as they are executed
+setopt INC_APPEND_HISTORY
+
+# Share history across multiple zsh sessions
+setopt SHARE_HISTORY
+
+# Expire duplicate entries first when trimming history
+setopt HIST_EXPIRE_DUPS_FIRST
+
+# Don't record an entry that was just recorded again
+setopt HIST_IGNORE_DUPS
+
+# Delete old recorded entry if new entry is a duplicate
+setopt HIST_IGNORE_ALL_DUPS
+
+# Don't record an entry starting with a space
+setopt HIST_IGNORE_SPACE
+
+# Don't write duplicate entries in the history file
+setopt HIST_SAVE_NO_DUPS
+
+# Remove superfluous blanks before recording entry
+setopt HIST_REDUCE_BLANKS
+
+# Don't execute immediately upon history expansion
+setopt HIST_VERIFY
+
+# ┌─────────────────────────────────────────────────────────────────────────┐
+# │                        Extended History Format                          │
+# └─────────────────────────────────────────────────────────────────────────┘
+
+# Save timestamp and duration of each command
+setopt EXTENDED_HISTORY
+
+# ╔═══════════════════════════════════════════════════════════════════════════╗
+# ║                           Custom Zsh Prompt                               ║
+# ╚═══════════════════════════════════════════════════════════════════════════╝
+
+
+# Load required modules
+autoload -Uz vcs_info
+autoload -U colors && colors
+
+# Set up vcs_info for Git status display
+zstyle ':vcs_info:*' enable git
+zstyle ':vcs_info:git:*' formats ' %F{cyan}%b%u%c%m%f'
+zstyle ':vcs_info:git:*' actionformats ' %F{red}%b|%a%u%c%m%f'
+zstyle ':vcs_info:git:*' check-for-changes true
+zstyle ':vcs_info:git:*' unstagedstr " %F{red}●%f"
+zstyle ':vcs_info:git:*' stagedstr " %F{green}●%f"
+zstyle ':vcs_info:git*+set-message:*' hooks git-untracked
+
+# Function to check for untracked files
+function +vi-git-untracked() {
+    if [[ $(git rev-parse --is-inside-work-tree 2> /dev/null) == 'true' ]] && \
+        git status --porcelain | grep '??' &> /dev/null; then
+        hook_com[misc]+=" %F{red}…%f"
+    fi
+}
+
+# Function to set the Zsh prompt
+function set_prompt() {
+    local exit_code=$?
+    
+    # Start with an empty PROMPT
+    PROMPT=""
+    
+    # Add exit code indicator if the last command failed
+    if [[ $exit_code -ne 0 ]]; then
+        PROMPT+="%F{red}✘ $exit_code%f "
+    fi
+    
+    # Base prompt structure
+    PROMPT+="%F{cyan}%n%f %F{yellow}at%f %F{green}%3~%f"
+    
+    # Include Git branch or status asynchronously
+    #
+    PROMPT+="${vcs_info_msg_0_}"
+    
+    # Add command prompt arrow
+    PROMPT+=$'\n%F{cyan}➜%f '
+}
+
+# Hook to update the prompt before each command
+precmd_functions+=(vcs_info set_prompt)
+
+# Enable command execution time tracking
+zmodload zsh/datetime
+zmodload zsh/zselect
+
+# Format the command execution time in a human-readable format
+function format_execution_time() {
+    local duration=$1
+    local hours=$((duration / 3600))
+    local minutes=$(((duration % 3600) / 60))
+    local seconds=$((duration % 60))
+    
+    if ((hours > 0)); then
+        printf "%dh %dm %ds" $hours $minutes $seconds
+    elif ((minutes > 0)); then
+        printf "%dm %ds" $minutes $seconds
+    else
+        printf "%ds" $seconds
+    fi
+}
+
+# Variables for tracking command execution time
+typeset -F SECONDS
+local cmd_start
+
+# Function to store the command start time
+function preexec() {
+    cmd_start=$SECONDS
+}
+
+# Function to display the command duration if over 1 second
+function precmd() {
+    if [ $cmd_start ]; then
+        local cmd_end=$SECONDS
+        local cmd_duration=$((cmd_end - cmd_start))
+        if ((cmd_duration >= 1)); then
+            local formatted_duration=$(format_execution_time $cmd_duration)
+            print -P "%F{yellow}Spent ${formatted_duration} on task%f"
+        fi
+        unset cmd_start
+    fi
+}
+
+# ╔═══════════════════════════════════════════════════════════════════════════╗
+# ║                             Completion Setup                              ║
+# ╚═══════════════════════════════════════════════════════════════════════════╝
+
+# Load completions system
+autoload -Uz compinit
+
+# Compile completion cache once a day
+if [[ -n ${ZDOTDIR}/.zcompdump(#qN.mh+24) ]]; then
+    compinit -d ${ZDOTDIR}/.zcompdump
+else
+    compinit -C
+fi
+
+# Enable completion caching
+zstyle ':completion::complete:*' use-cache on
+zstyle ':completion::complete:*' cache-path "${XDG_CACHE_HOME:-$HOME/.cache}/zsh/.zcompcache"
+
+# ┌─────────────────────────────────────────────────────────────────────────┐
+# │                   Completion Styling and Behavior                       │
+# └─────────────────────────────────────────────────────────────────────────┘
+
+# Use menu selection
+zstyle ':completion:*' menu select
+
+# Case-insensitive (all), partial-word, and then substring completion
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
+
+# Group matches and describe groups
+zstyle ':completion:*:*:*:*:*' menu select
+zstyle ':completion:*:matches' group 'yes'
+zstyle ':completion:*:options' description 'yes'
+zstyle ':completion:*:options' auto-description '%d'
+zstyle ':completion:*:corrections' format ' %F{green}-- %d (errors: %e) --%f'
+zstyle ':completion:*:descriptions' format ' %F{yellow}-- %d --%f'
+zstyle ':completion:*:messages' format ' %F{purple} -- %d --%f'
+zstyle ':completion:*:warnings' format ' %F{red}-- no matches found --%f'
+zstyle ':completion:*' format ' %F{yellow}-- %d --%f'
+zstyle ':completion:*' group-name ''
+zstyle ':completion:*' verbose yes
+
+# Fuzzy match mistyped completions
+zstyle ':completion:*' completer _complete _match _approximate
+zstyle ':completion:*:match:*' original only
+zstyle ':completion:*:approximate:*' max-errors 1 numeric
+
+# Increase the number of errors based on the length of the typed word
+zstyle -e ':completion:*:approximate:*' max-errors 'reply=($((($#PREFIX+$#SUFFIX)/3))numeric)'
+
+# Don't complete unavailable commands
+zstyle ':completion:*:functions' ignored-patterns '(_*|pre(cmd|exec))'
+
+# Array completion element sorting
+zstyle ':completion:*:*:-subscript-:*' tag-order indexes parameters
+
+# Directories
+zstyle ':completion:*:*:cd:*' tag-order local-directories directory-stack path-directories
+zstyle ':completion:*:*:cd:*:directory-stack' menu yes select
+zstyle ':completion:*:-tilde-:*' group-order 'named-directories' 'path-directories' 'users' 'expand'
+zstyle ':completion:*' squeeze-slashes true
+
+# History
+zstyle ':completion:*:history-words' stop yes
+zstyle ':completion:*:history-words' remove-all-dups yes
+zstyle ':completion:*:history-words' list false
+zstyle ':completion:*:history-words' menu yes
+
+# Environment Variables
+zstyle ':completion::*:(-command-|export):*' fake-parameters ${${${_comps[(I)-value-*]#*,}%%,*}:#-*-}
+
+# Ignore multiple entries.
+zstyle ':completion:*:(rm|kill|diff):*' ignore-line other
+zstyle ':completion:*:rm:*' file-patterns '*:all-files'
+
+
+# ┌─────────────────────────────────────────────────────────────────────────┐
+# │               History Search Multi Word Configuration                   │
+# └─────────────────────────────────────────────────────────────────────────┘
+
+zstyle ":history-search-multi-word" page-size "8"
+zstyle ":history-search-multi-word" highlight-color "fg=yellow,bold"
+zstyle ":plugin:history-search-multi-word" synhl "yes"
+zstyle ":plugin:history-search-multi-word" active "underline"
+zstyle ":plugin:history-search-multi-word" check-paths "yes"
+zstyle ":plugin:history-search-multi-word" clear-on-cancel "no"
+
+# ┌─────────────────────────────────────────────────────────────────────────┐
+# │                       External Sources                                  │
+# └─────────────────────────────────────────────────────────────────────────┘
+
+
+# Check if .zprofile exists before sourcing it, to avoid errors
+if [ -f "$HOME/.zprofile" ]; then
+    source "$HOME/.zprofile"
+else
+    echo "Warning: .zprofile not found."
+fi
+
+# Check if .zalias exists before sourcing it, to avoid errors
+if [ -f "$HOME/.zalias" ]; then
+    source "$HOME/.zalias"
+else
+    echo "Warning: .zalias not found."
+fi
+
+# ┌─────────────────────────────────────────────────────────────────────────┐
+# │                           Shell Integrations                            │
+# └─────────────────────────────────────────────────────────────────────────┘
+
+# Initialize zoxide with the command 'cd'
+eval "$(zoxide init --cmd cd zsh)"
+
+# ┌─────────────────────────────────────────────────────────────────────────┐
+# │                           Key Bindings                                  │
+# └─────────────────────────────────────────────────────────────────────────┘
+
+# Bind 'Ctrl-n' and 'Ctrl-p'  for history navigation
+bindkey '^n' history-substring-search-up
+bindkey '^p' history-substring-search-down
+
+# Bind 'Ctrl-r' for history search
+bindkey "^r" history-search-multi-word
